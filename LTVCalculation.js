@@ -15,8 +15,19 @@ function calculateAmounts(){
     var FirstLoan = getNumericValue("FirstLoan");
     var SecondLoan = getNumericValue("SecondLoan");
     var Appraisal = getNumericValue("Appraisal");
-    var LTV = getNumericValue("LTV")/100.0;
-    var CLTV = getNumericValue("CLTV")/100.0;
+    var LTV = getNumericValue("LTV");
+    var CLTV = getNumericValue("CLTV");
+
+    // Convert to decimal, Round to 2 decimal places
+    // Note that the result may be off by 0.01 due to precision errors
+    //      ...which I am totally OK with for now.
+    LTV = Math.round(LTV*100)/10000;
+    CLTV = Math.round(CLTV*100)/10000;
+
+    // Just regular rounding here
+    FirstLoan = Math.round(FirstLoan);
+    SecondLoan = Math.round(SecondLoan);
+    Appraisal = Math.round(Appraisal);
 
     if(!isNaN(FirstLoan) && !isNaN(Appraisal)){
         LTV = FirstLoan / Appraisal;
@@ -46,8 +57,16 @@ function calculateAmounts(){
         FirstLoan = Appraisal * CLTV - SecondLoan;
     }
 
-    LTV *= 100;
-    CLTV *= 100;
+    // Convert to percent, round to 2 decimal places
+    // Note that the result may be off by 0.01 due to precision errors
+    //      ...which I am totally OK with for now.
+    LTV = Math.round(LTV*10000)/100;
+    CLTV = Math.round(CLTV*10000)/100;
+
+    // Just regular rounding here
+    FirstLoan = Math.round(FirstLoan);
+    SecondLoan = Math.round(SecondLoan);
+    Appraisal = Math.round(Appraisal);
 
     setValue("FirstLoan",FirstLoan);
     setValue("SecondLoan",SecondLoan);
@@ -68,4 +87,9 @@ function clearAmounts(){
 document.addEventListener('DOMContentLoaded', function(){
     obj("btn-calculate").onclick = calculateAmounts;
     obj("btn-clear").onclick = clearAmounts;
+    obj("FirstLoan").onblur = calculateAmounts;
+    obj("SecondLoan").onblur = calculateAmounts;
+    obj("Appraisal").onblur = calculateAmounts;
+    obj("LTV").onblur = calculateAmounts;
+    obj("CLTV").onblur = calculateAmounts;
 });
